@@ -103,7 +103,7 @@ int main(void)
   /* USER CODE BEGIN 2 */
 
   /* USER CODE END 2 */
-  SPI_Init();
+  //SPI_Init();
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)

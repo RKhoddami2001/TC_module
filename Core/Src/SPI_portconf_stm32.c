@@ -75,7 +75,7 @@ static SPI_Status_t hal_to_spi_status(HAL_StatusTypeDef s)
  * enums.  Each mapping function makes the translation explicit and safe
  * against future HAL changes.
  */
-
+/*
 static uint32_t map_mode(SPI_Mode_t m)
 {
     return (m == SPI_MODE_MASTER) ? SPI_MODE_MASTER : SPI_MODE_SLAVE;
@@ -166,11 +166,13 @@ static uint32_t map_crc(SPI_CRCEnable_t c)
  * DeInit + re-Init guarantees our config values win.
  * Remove the DeInit call if your startup flow relies on CubeMX init persisting.
  */
-static SPI_Status_t stm32_init(void *hw_handle, const SPI_BusConfig_t *config)
+ SPI_Status_t spi_init(void *hw_handle, const SPI_BusConfig_t *config)
 {
+	/*
     SPI_HandleTypeDef *hspi = (SPI_HandleTypeDef *)hw_handle;
 
     /* Tear down first so HAL_SPI_Init starts from a clean slate. */
+    /*
     HAL_SPI_DeInit(hspi);
 
     hspi->Init.Mode              = map_mode(config->mode);
@@ -186,11 +188,21 @@ static SPI_Status_t stm32_init(void *hw_handle, const SPI_BusConfig_t *config)
     hspi->Init.CRCPolynomial     = config->crc_polynomial;
 
     return hal_to_spi_status(HAL_SPI_Init(hspi));
+    */
+	/*Check the bus value ( hw_hanle ) and call the
+	 * MX_SPIx();
+	 *  */
+	/*The config argument in this function will not be used*/
+	return 0;
+
+
+
 }
 
-static SPI_Status_t stm32_deinit(void *hw_handle)
+ SPI_Status_t spi_deinit(void *hw_handle)
 {
-    return hal_to_spi_status(HAL_SPI_DeInit((SPI_HandleTypeDef *)hw_handle));
+   // return hal_to_spi_status(HAL_SPI_DeInit((SPI_HandleTypeDef *)hw_handle));
+	/*MX_SPI_DEINIT()!!!
 }
 
 static SPI_Status_t stm32_transmit(void    *hw_handle,
@@ -231,17 +243,17 @@ static SPI_Status_t stm32_transmit_receive(void    *hw_handle,
  * entry in the config section below stores the address of a static const
  * SPI_STM32_CS_t as cs_handle.
  */
-static void stm32_cs_assert(void *cs_handle)
+void spi_cs_assert(void *cs_handle)
 {
     const SPI_STM32_CS_t *cs = (const SPI_STM32_CS_t *)cs_handle;
     HAL_GPIO_WritePin(cs->port, cs->pin, GPIO_PIN_RESET);
 }
 
 /** @brief  Drive CS high – de-select the slave. */
-static void stm32_cs_deassert(void *cs_handle)
+void spi_cs_deassert(void *cs_handle)
 {
     const SPI_STM32_CS_t *cs = (const SPI_STM32_CS_t *)cs_handle;
-    HAL_GPIO_WritePin(cs->port, cs->pin, GPIO_PIN_SET);
+    HAL_GPIO_WritePin(cs->port, cs->pin, GPIO_PIN_SET);//This maybe change to the gpio_driver type!
 }
 
 /* ── vtable instance ─────────────────────────────────────────────────────── */
@@ -253,6 +265,7 @@ static void stm32_cs_deassert(void *cs_handle)
  * extern-declared in SPI_portconf_stm32.h so this symbol is visible there,
  * though in practice only SPI_Config_RegisterAll() (below) uses it.
  */
+/*not needed any more*/
 const SPI_Port_t spi_port_stm32 = {
     .init             = stm32_init,
     .deinit           = stm32_deinit,
@@ -398,7 +411,7 @@ SPI_Status_t SPI_Config_RegisterAll(void)
     spi_bus[BUS_SPI1_INDEX].config = spi1_config;
 
     /* Platform binding */
-    spi_bus[BUS_SPI1_INDEX].port      = &spi_port_stm32;
+    //spi_bus[BUS_SPI1_INDEX].port      = &spi_port_stm32;
     spi_bus[BUS_SPI1_INDEX].hw_handle = &hspi1;   /* CubeMX HAL handle */
 
     /* Slave 0: ADS1220 */
@@ -426,7 +439,7 @@ SPI_Status_t SPI_Config_RegisterAll(void)
     }
 
     spi_bus[BUS_SPI3_INDEX].config    = spi3_config;
-    spi_bus[BUS_SPI3_INDEX].port      = &spi_port_stm32;
+    //spi_bus[BUS_SPI3_INDEX].port      = &spi_port_stm32;
     spi_bus[BUS_SPI3_INDEX].hw_handle = &hspi3;
 
     /* Slave 0: W25Q64 Flash */

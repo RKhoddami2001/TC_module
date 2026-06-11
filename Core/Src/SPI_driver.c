@@ -227,7 +227,7 @@ SPI_Status_t SPI_Transfer(uint8_t bus_index, const SPI_Transfer_t *xfer)
     bus->busy = 1;
 
     /* ── 3. Assert CS (select slave) ────────────────────────────────────── */
-    bus->port->cs_assert(slave->cs_handle);
+    //bus->port->cs_assert(slave->cs_handle);/*Use standard function*/
 
     /* ── 4. Transfer through vtable ─────────────────────────────────────── */
     SPI_Status_t rc;
@@ -235,25 +235,25 @@ SPI_Status_t SPI_Transfer(uint8_t bus_index, const SPI_Transfer_t *xfer)
     switch (xfer->direction) {
 
         case SPI_D_DIR_TX:
-            rc = bus->port->transmit(bus->hw_handle,
+            /*rc = bus->port->transmit(bus->hw_handle,
                                      xfer->tx_buf,
                                      xfer->length,
-                                     bus->config.timeout_ms);
+                                     bus->config.timeout_ms);/*Use standard function*/
             break;
 
         case SPI_D_DIR_RX:
-            rc = bus->port->receive(bus->hw_handle,
+           /* rc = bus->port->receive(bus->hw_handle,
                                     xfer->rx_buf,
                                     xfer->length,
-                                    bus->config.timeout_ms);
+                                    bus->config.timeout_ms);/*Use standard function*/
             break;
 
         case SPI_D_DIR_TXRX:
-            rc = bus->port->transmit_receive(bus->hw_handle,
+           /* rc = bus->port->transmit_receive(bus->hw_handle,
                                              xfer->tx_buf,
                                              xfer->rx_buf,
                                              xfer->length,
-                                             bus->config.timeout_ms);
+                                             bus->config.timeout_ms);/*Use standard function*/
             break;
 
         default:
@@ -266,7 +266,7 @@ SPI_Status_t SPI_Transfer(uint8_t bus_index, const SPI_Transfer_t *xfer)
      * This is unconditional.  Leaving CS asserted on error would lock the
      * slave and corrupt any subsequent transaction on the same bus.
      */
-    bus->port->cs_deassert(slave->cs_handle);
+   // bus->port->cs_deassert(slave->cs_handle);/*Use standard function*/
 
     /* ── 6. Release bus ─────────────────────────────────────────────────── */
     /*
@@ -298,7 +298,7 @@ SPI_Status_t SPI_DeInitBus(uint8_t bus_index)
         return SPI_ERROR;
     }
 
-    SPI_Status_t rc = bus->port->deinit(bus->hw_handle);
+    //SPI_Status_t rc = bus->port->deinit(bus->hw_handle);/*Use standard function*/
 
     /* Clear runtime flags regardless of whether deinit succeeded,
      * so the slot is not left in an inconsistent state. */
